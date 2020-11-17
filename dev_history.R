@@ -9,6 +9,13 @@ library(usethis)
 
 # use_test("encode_mean")
 
+# use_github()
+# use_readme_rmd()
+
+# use_lifecycle_badge("experimental")
+# badgecreatr::badge_packageversion()
+# badgecreatr::badge_license()
+
 
 document()
 load_all()
@@ -19,3 +26,8 @@ spell_check()
 
 devtools::check()
 goodpractice::goodpractice()
+
+
+install(upgrade = "never")
+rmarkdown::render("README.Rmd")
+unlink("README.html")

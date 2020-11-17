@@ -1,0 +1,63 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# targencoding
+
+```{r, echo = FALSE} 
+version <- as.vector(read.dcf('DESCRIPTION')[, 'Version']) 
+version <- gsub('-', '.', version) 
+```
+
+<!-- badges: start -->
+[![license](https://img.shields.io/badge/license-GPL--3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+[![packageversion](https://img.shields.io/badge/package%20version-`r version`-orange.svg)](commits/master)
+<!-- badges: end -->
+
+**targencoding** contain extra steps for the [recipes](https://recipes.tidymodels.org) package for using target encoding (or effect or likelihood encoding) for categorical variables during preprocessing.
+
+## Installation
+
+You can install the development version from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("remotes")
+remotes::install_github("abichat/targencoding")
+```
+## Target encoding by the mean
+
+`step_encode_mean()` will replace the levels of a categorical variable by the means of the outcome variable for each level.
+
+```{r example, message=FALSE}
+library(recipes)
+library(targencoding)
+data("penguins", package = "modeldata")
+penguins
+```
+
+```{r}
+rec <- recipe(body_mass_g ~ ., data = penguins) %>%
+  step_encode_mean(all_nominal(), outcome = "body_mass_g") %>%
+  prep()
+juice(rec)
+```
+
+To get informations about the step:
+
+```{r}
+tidy(rec, 1)
+```
+
+
