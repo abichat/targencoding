@@ -11,7 +11,7 @@ step_encode_mean(
   role = NA,
   trained = FALSE,
   outcome = NULL,
-  options = list(na.rm = FALSE),
+  options = list(na.rm = TRUE),
   means = NULL,
   skip = FALSE,
   id = rand_id("encode_count")

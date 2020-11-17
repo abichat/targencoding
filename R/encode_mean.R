@@ -24,7 +24,7 @@
 #' juice(rec)
 #' tidy(rec, 1)
 step_encode_mean <- function(recipe, ..., role = NA, trained = FALSE,
-                             outcome = NULL, options = list(na.rm = FALSE),
+                             outcome = NULL, options = list(na.rm = TRUE),
                              means = NULL, skip = FALSE,
                              id = rand_id("encode_count")) {
 
@@ -56,13 +56,24 @@ step_encode_mean_new <- function(terms, role, trained, outcome,
        id = id)
 }
 
+#' @importFrom rlang exec
+statistics_by_group <- function(value, groups, fun, args) {
+  funwithargs <- function(x, args) {
+    res <- exec(fun, x = x, !!!args)
+  }
+  tapply(value, groups, funwithargs, args)
+}
+
 #' @export
 prep.step_encode_mean <- function(x, training, info = NULL, ...) {
 
   col_names <- terms_select(terms = x$terms, info = info)
 
+  # means <- map(training[, col_names],
+  #              ~ tapply(training[x$outcome][[1]], ., mean, na.rm = TRUE))
   means <- map(training[, col_names],
-               ~ tapply(training[x$outcome][[1]], ., mean, na.rm = TRUE))
+               statistics_by_group, value = training[x$outcome][[1]],
+               fun = mean, args = x$options)
 
   step_encode_mean_new(
     terms = x$terms,

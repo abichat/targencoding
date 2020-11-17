@@ -15,4 +15,4 @@ use_tidy_description()
 
 spell_check()
 
-check()
+devtools::check()
