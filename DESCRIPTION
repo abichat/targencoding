@@ -1,5 +1,5 @@
 Package: targencoding
-Title: Extra recipes steps for taget encoding.
+Title: Extra recipes steps for target encoding
 Version: 0.0.0.9000
 Authors@R: 
     person(given = "Antoine",
@@ -9,6 +9,15 @@ Authors@R:
            comment = c(ORCID = "0000-0001-6599-7081"))
 Description: What the package does (one paragraph).
 License: GPL-3
+Imports: 
+    generics,
+    purrr,
+    recipes,
+    rlang,
+    tibble,
+    tidyr
+Suggests: 
+    modeldata
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
