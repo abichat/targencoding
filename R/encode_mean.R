@@ -15,8 +15,7 @@
 #'
 #' @examples
 #' library(recipes)
-#' library(modeldata)
-#' data("penguins")
+#' data("penguins", package = "modeldata")
 #' rec <-
 #'   recipe(body_mass_g ~ ., data = penguins) %>%
 #'   step_encode_mean(all_nominal(), outcome = "body_mass_g") %>%
@@ -69,8 +68,6 @@ prep.step_encode_mean <- function(x, training, info = NULL, ...) {
 
   col_names <- terms_select(terms = x$terms, info = info)
 
-  # means <- map(training[, col_names],
-  #              ~ tapply(training[x$outcome][[1]], ., mean, na.rm = TRUE))
   means <- map(training[, col_names],
                statistics_by_group, value = training[x$outcome][[1]],
                fun = mean, args = x$options)
@@ -108,15 +105,13 @@ print.step_encode_mean <- function(x, width = max(20, options()$width - 30), ...
 #' @param x A `step_encode_mean` object.
 #' @export
 tidy.step_encode_mean <- function(x, ...) {
-  term_names <- sel2char(x$terms)
   if (is_trained(x)) {
-    res <- tibble(terms = term_names,
-                  value = x$means)
+    res <- tibble(terms = names(x$means),
+                  value = unname(x$means))
     res$value <- map(res$value, enframe, name = "group", value = "mean")
     res <- unnest(res, cols = .data$value)
   } else {
-    term_names <- sel2char(x$terms)
-    res <- tibble(terms = term_names,
+    res <- tibble(terms = sel2char(x$terms),
                   value = NA)
   }
   res$id <- x$id
