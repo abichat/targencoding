@@ -16,8 +16,7 @@
 #' @examples
 #' library(recipes)
 #' data("penguins", package = "modeldata")
-#' rec <-
-#'   recipe(body_mass_g ~ ., data = penguins) %>%
+#' rec <- recipe(body_mass_g ~ ., data = penguins) %>%
 #'   step_encode_mean(all_nominal(), outcome = "body_mass_g") %>%
 #'   prep()
 #' juice(rec)
@@ -27,7 +26,7 @@ step_encode_mean <- function(recipe, ..., role = NA, trained = FALSE,
                              means = NULL, skip = FALSE,
                              id = rand_id("encode_count")) {
 
-  if (length(outcome) != 1 ) {
+  if (length(outcome) != 1) {
     abort("`outcome` should select one column.")
   }
 
@@ -88,14 +87,16 @@ prep.step_encode_mean <- function(x, training, info = NULL, ...) {
 #' @importFrom purrr map2_dfc
 bake.step_encode_mean <- function(object, new_data, ...) {
   vars <- names(object$means)
-  new_data[, vars] <- map2_dfc(new_data[, vars], object$means, ~ unname(.y[.x]))
+  new_data[, vars] <- map2_dfc(new_data[, vars], object$means,
+                               ~ as.numeric(unname(.y[.x])))
 
   ## Always convert to tibbles on the way out
   as_tibble(new_data)
 }
 
 #' @export
-print.step_encode_mean <- function(x, width = max(20, options()$width - 30), ...) {
+print.step_encode_mean <-
+  function(x, width = max(20, options()$width - 30), ...) {
   cat("Mean target encoding for ", sep = "")
   printer(names(x$means), x$terms, x$trained, width = width)
   invisible(x)
@@ -110,6 +111,7 @@ tidy.step_encode_mean <- function(x, ...) {
                   value = unname(x$means))
     res$value <- map(res$value, enframe, name = "group", value = "mean")
     res <- unnest(res, cols = .data$value)
+    res$mean <- as.numeric(res$mean)
   } else {
     res <- tibble(terms = sel2char(x$terms),
                   value = NA)

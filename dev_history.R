@@ -7,6 +7,8 @@ library(usethis)
 
 # use_r("encode_mean")
 
+# use_test("encode_mean")
+
 
 document()
 load_all()
@@ -16,3 +18,4 @@ use_tidy_description()
 spell_check()
 
 devtools::check()
+goodpractice::goodpractice()

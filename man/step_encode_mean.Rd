@@ -62,10 +62,8 @@ encode qualitative data into numeric based on the outcome value.
 }
 \examples{
 library(recipes)
-library(modeldata)
-data("penguins")
-rec <-
-  recipe(body_mass_g ~ ., data = penguins) \%>\%
+data("penguins", package = "modeldata")
+rec <- recipe(body_mass_g ~ ., data = penguins) \%>\%
   step_encode_mean(all_nominal(), outcome = "body_mass_g") \%>\%
   prep()
 juice(rec)
